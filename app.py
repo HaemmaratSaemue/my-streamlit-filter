@@ -9,8 +9,8 @@ FONT_FILE = 'THSarabunNew.ttf'
 FONT_NAME = 'THSarabunNew'
 
 # --- 1. ฟังก์ชันสร้าง PDF (ปรับปรุงเป็นแนวนอน + ตัดคำ) ---
+# --- 1. ฟังก์ชันสร้าง PDF (ฉบับแก้ไข Error) ---
 def create_pdf(dataframe, title="Data Report"):
-    # 1. ตั้งค่ากระดาษแนวนอน (Landscape)
     pdf = FPDF(orientation='L', unit='mm', format='A4')
     pdf.add_page()
     
@@ -25,6 +25,7 @@ def create_pdf(dataframe, title="Data Report"):
     page_width = 280 
     if dataframe.empty:
         pdf.cell(0, 10, "No Data Found", ln=True, align='C')
+        # แก้ไขจุดที่ 1
         return pdf.output(dest='S').encode('latin-1')
 
     num_columns = len(dataframe.columns)
@@ -48,7 +49,8 @@ def create_pdf(dataframe, title="Data Report"):
             pdf.cell(col_width, row_height, text, border=1, align='L')
         pdf.ln(row_height)
         
-    return bytes(pdf.output(dest='S'))
+    # แก้ไขจุดที่ 2: ใช้ .encode('latin-1') แทนการครอบด้วย bytes() เปล่าๆ
+    return pdf.output(dest='S').encode('latin-1')
 
 # --- 2. ฟังก์ชันสร้าง Excel ---
 def create_excel(dataframe, sheet_name='Sheet1'):
@@ -198,4 +200,5 @@ if uploaded_file is not None:
                         st.info("ไม่มีข้อมูลตกค้าง")
 
     except Exception as e:
+
         st.error(f"เกิดข้อผิดพลาด: {e}")
